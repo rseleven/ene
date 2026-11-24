@@ -1,0 +1,20 @@
+# /etc/systemd/system/ene-off.service
+# Apply a lighting mode once at boot, without sync (suitable for a static
+# color, brightness, turning off - when animation phase does not matter).
+# Install: sudo cp ene.py /usr/local/bin/ene.py
+#          sudo cp ene-off.service /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable ene-off.service
+# The mode is set in ExecStart (examples: off / color 255 0 0 / brightness 128).
+# IMPORTANT: do not enable together with ene-syncd.service - pick one.
+
+[Unit]
+Description=Ballistix RGB: apply lighting mode (one-shot, no sync)
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/bin/ene.py off
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

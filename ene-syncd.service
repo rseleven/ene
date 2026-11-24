@@ -1,0 +1,28 @@
+# /etc/systemd/system/ene-syncd.service
+# Daemon: applies a mode and keeps the modules in sync (ticks every ~110 ms).
+# Needed ONLY for animations (rainbow/wave/...) on several modules in phase -
+# lights that are off need no sync.
+# For a one-shot mode at boot (off / static color / brightness) use
+# ene-off.service - it runs once and exits, no permanent process.
+# Install: sudo cp ene.py /usr/local/bin/ene.py
+#          sudo cp ene-syncd.service /etc/systemd/system/
+#          sudo systemctl daemon-reload && sudo systemctl enable --now ene-syncd.service
+# The mode is set in ExecStart (examples: daemon / daemon --pattern breathing
+# --color 0 0 255 / daemon --color 255 0 0; no arguments = rainbow).
+# Stopping (before manual ene.py commands or OpenRGB):
+#          sudo systemctl stop ene-syncd.service
+# IMPORTANT: do not enable together with ene-off.service - pick one.
+
+[Unit]
+Description=Ballistix RGB: lighting daemon with module sync
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/ene.py daemon
+Restart=on-failure
+RestartSec=5
+Nice=-10
+
+[Install]
+WantedBy=multi-user.target
